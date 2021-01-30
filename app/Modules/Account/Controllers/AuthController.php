@@ -43,10 +43,9 @@ class AuthController extends ApiController
         $User = User::where('id', auth()->user()->id)->first();
 
         if (!$User->hasVerifiedEmail()) {
-            return $this->responseError('E-mail não verificado. Favor verificar seu e-mail.');
+            return $this->responseError('Não foi possível acessar o sistema.
+            O seu e-mail ainda não foi verificado.');
         }
-
-        return $this->sendVerificationMail($request);
 
         $User->logged_at = Carbon::now()->toDateTimeString();
         $User->save();
@@ -75,12 +74,17 @@ class AuthController extends ApiController
 
         $user = User::where('id', 1)->first();
 
-        $this->sendVerificationMail($user);
+        if ($user instanceof MustVerifyEmail) {
 
-//        return response()->json([
-//            'message' => 'Usuário cadastrado com sucesso!',
-//            'user' => $user
-//        ], 201);
+                $user->sendEmailVerificationNotification();
+
+                return $this->responseSuccess('Usuário criado com sucesso! Enviaremos um e-mail de confirmação nos proximos instantes. Favor verifique sua caixa de entrada.');
+        }
+
+        return response()->json([
+            'message' => 'Usuário cadastrado com sucesso!',
+            'user' => $user
+        ], 201);
     }
 
     public function logout()

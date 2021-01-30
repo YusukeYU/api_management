@@ -2,6 +2,7 @@
 
 namespace App\Domains\Account\Entities;
 
+use App\Modules\Account\Mails\MailEmailVerificationNotification;
 use App\Modules\Account\Mails\MailResetPasswordNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -56,6 +57,11 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new MailResetPasswordNotification($token));
+    }
+
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new MailEmailVerificationNotification());
     }
 
 }
