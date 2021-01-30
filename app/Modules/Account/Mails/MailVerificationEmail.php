@@ -20,7 +20,7 @@ class MailVerificationEmail extends Mailable
             ->view('Account::Emails.sendMailResetPasswordNotification', [
                 'token' => $this->values['token'],
                 'user' => $this->values['user'],
-                'url' => 'https://google.com.br',
+                'url' => 'http://api_m/register',
             ]);
     }
 }
